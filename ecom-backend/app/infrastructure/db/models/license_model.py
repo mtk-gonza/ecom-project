@@ -3,8 +3,8 @@ from sqlalchemy.orm import relationship, foreign
 from sqlalchemy.sql import and_
 from app.infrastructure.db.base import Base
 
-class LicenceModel(Base):
-    __tablename__ = 'licences'    
+class LicenseModel(Base):
+    __tablename__ = 'licenses'    
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(60), nullable=False)
@@ -14,9 +14,9 @@ class LicenceModel(Base):
     
     images = relationship(
         "Image",
-        primaryjoin="and_(Licence.id == Image.entity_id, Image.entity_type == 'licence')",
+        primaryjoin="and_(License.id == Image.entity_id, Image.entity_type == 'license')",
         foreign_keys="[Image.entity_id]",
         overlaps="product_images",
         viewonly=True
     )
-    products = relationship('ProductModel', back_populates='licence')
+    products = relationship('ProductModel', back_populates='license')

@@ -1,7 +1,9 @@
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 
 class Settings(BaseSettings):
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # =========================
     # 🔹 CONFIG GENERAL
     # =========================
@@ -9,14 +11,18 @@ class Settings(BaseSettings):
     API_URL: str = "http://localhost:3050"
     API_PORT: int = 3050
     WEB_PORT: int = 3060
+    SECRET_KEY: str = 'ThisIsNotSecret'
+    ALGORITHM: str = 'HS256'
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ACCESS_TOKEN_EXPIRE_HOURS: int = 2
+    UPLOADS_DIR = os.path.join('uploads')
+    IMAGES_DIR = os.path.join(UPLOADS_DIR, 'images')
 
     # =========================
     # 🔹 DB
     # =========================
     DB_TYPE: str = "sqlite"
-
     SQLITE_DB: str = "dev.db"
-
     DB_USER: str | None = None
     DB_PASSWORD: str | None = None
     DB_HOST: str | None = None

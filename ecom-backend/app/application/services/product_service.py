@@ -17,7 +17,6 @@ class ProductService:
     # 🔹 GET ALL
     def get_products(self):
         logger.info("Obteniendo lista de productos")
-
         products = self.repository.get_all()
 
         logger.debug(f"Cantidad de productos obtenidos: {len(products)}")

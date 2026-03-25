@@ -38,14 +38,14 @@ class ProductModel(Base):
     # 🔹 Relaciones
     licence_id = Column(Integer, ForeignKey('licences.id'), nullable=True)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=True)
-    licence = relationship('LicenceModel', back_populates='products')
+    license = relationship('LicenseModel', back_populates='products')
     category = relationship('CategoryModel', back_populates='products')
     specifications = relationship('SpecificationModel', back_populates='product')
     images = relationship(
         "ImageModel",
         primaryjoin="and_(Product.id == Image.entity_id, Image.entity_type == 'product')",
         foreign_keys="[Image.entity_id]",
-        overlaps="licence_images",
+        overlaps="license_images",
         viewonly=True
     )
 
