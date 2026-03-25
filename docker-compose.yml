@@ -1,0 +1,28 @@
+services:
+  ecom-backend:
+    build:
+      context: ./ecom-backend
+    container_name: ecom-backend
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - CORS_ALLOW_ORIGINS=${CORS_ALLOW_ORIGINS}
+      - DEBUG=${DEBUG}
+    ports:
+      - ${API_PORT}:3050
+    restart: always
+
+  ecom-frontend:
+    build:
+      context: ./ecom-frontend
+    container_name: ecom-frontend
+    environment:
+      - API_URL=${API_URL}
+    ports:
+      - ${WEB_PORT}:80
+    depends_on:
+      - ecom-backend
+    restart: always
