@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, func
 from sqlalchemy.orm import relationship
 from app.infrastructure.db.base import Base
 
-class Category(Base):
+class CategoryModel(Base):
     __tablename__ = 'categories'  
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -11,4 +11,4 @@ class Category(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    products = relationship('Product', back_populates='category')
+    products = relationship('ProductModel', back_populates='category')

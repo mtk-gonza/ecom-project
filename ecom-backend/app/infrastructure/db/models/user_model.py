@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from app.infrastructure.db.base import Base
 from app.infrastructure.db.models.user_roles_model import user_roles
 
-class User(Base):
+class UserModel(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True)
@@ -17,4 +17,4 @@ class User(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
-    roles = relationship('Role', secondary=user_roles, back_populates='users')
+    roles = relationship('RoleModel', secondary=user_roles, back_populates='users')

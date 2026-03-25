@@ -7,6 +7,8 @@ API REST desarrollada con **FastAPI**, conectada a una base de datos **MySql**, 
 
 ## ⚙️ Requisitos
 - Python 3.12+
+- FastAPI
+- SQLAlchemy
 - MySql
 - pipenv o virtualenv (recomendado)
 - Alembic

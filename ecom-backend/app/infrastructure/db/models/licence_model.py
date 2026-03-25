@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, foreign
 from sqlalchemy.sql import and_
 from app.infrastructure.db.base import Base
 
-class Licence(Base):
+class LicenceModel(Base):
     __tablename__ = 'licences'    
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -19,4 +19,4 @@ class Licence(Base):
         overlaps="product_images",
         viewonly=True
     )
-    products = relationship('Product', back_populates='licence')
+    products = relationship('ProductModel', back_populates='licence')

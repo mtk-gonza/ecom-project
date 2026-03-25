@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from sqlalchemy.orm import relationship
 from app.infrastructure.db.base import Base
 
-class Image(Base):
+class ImageModel(Base):
     __tablename__ = 'images'
     
     id = Column(Integer, primary_key=True, index=True)

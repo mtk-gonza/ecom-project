@@ -38,11 +38,11 @@ class ProductModel(Base):
     # 🔹 Relaciones
     licence_id = Column(Integer, ForeignKey('licences.id'), nullable=True)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=True)
-    licence = relationship('Licence', back_populates='products')
-    category = relationship('Category', back_populates='products')
-    specifications = relationship('ProductSpecification', back_populates='product')
+    licence = relationship('LicenceModel', back_populates='products')
+    category = relationship('CategoryModel', back_populates='products')
+    specifications = relationship('SpecificationModel', back_populates='product')
     images = relationship(
-        "Image",
+        "ImageModel",
         primaryjoin="and_(Product.id == Image.entity_id, Image.entity_type == 'product')",
         foreign_keys="[Image.entity_id]",
         overlaps="licence_images",

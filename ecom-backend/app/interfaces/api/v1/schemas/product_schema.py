@@ -1,10 +1,13 @@
 from pydantic import BaseModel, field_validator
-from typing import List, Optional
+from typing import List, Optional, Dict
 from decimal import Decimal
 from datetime import datetime
 from app.domain.enums import Currency, ProductStatus
 
 
+# =========================
+# 🔹 BASE
+# =========================
 class ProductBaseSchema(BaseModel):
     name: str
     description: Optional[str] = None
@@ -30,7 +33,14 @@ class ProductBaseSchema(BaseModel):
     category_id: Optional[int] = None
 
 
+# =========================
+# 📥 CREATE
+# =========================
 class ProductCreateSchema(ProductBaseSchema):
+    slug: str
+
+    images: Optional[List[str]] = []
+    specifications: Optional[List[Dict[str, str]]] = []
 
     @field_validator("price")
     def validate_price(cls, v):
@@ -38,7 +48,22 @@ class ProductCreateSchema(ProductBaseSchema):
             raise ValueError("Precio inválido")
         return v
 
+    @field_validator("discount")
+    def validate_discount(cls, v):
+        if v < 0 or v > 100:
+            raise ValueError("Descuento inválido")
+        return v
 
+    @field_validator("stock")
+    def validate_stock(cls, v):
+        if v < 0:
+            raise ValueError("Stock inválido")
+        return v
+
+
+# =========================
+# 🔄 UPDATE (PATCH)
+# =========================
 class ProductUpdateSchema(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
@@ -66,15 +91,24 @@ class ProductUpdateSchema(BaseModel):
     slug: Optional[str] = None
 
     images: Optional[List[str]] = None
-    specifications: Optional[List[dict]] = None
+    specifications: Optional[List[Dict[str, str]]] = None
+
+    @field_validator("price")
+    def validate_price(cls, v):
+        if v is not None and v < 0:
+            raise ValueError("Precio inválido")
+        return v
 
 
+# =========================
+# 📤 RESPONSE
+# =========================
 class ProductResponseSchema(ProductBaseSchema):
     id: int
     slug: str
 
     images: List[str]
-    specifications: List[dict]
+    specifications: List[Dict[str, str]]
 
     created_at: datetime
     updated_at: datetime
@@ -84,6 +118,9 @@ class ProductResponseSchema(ProductBaseSchema):
     }
 
 
+# =========================
+# 🗑️ DELETE RESPONSE
+# =========================
 class ProductDeleteResponseSchema(BaseModel):
     success: bool
     detail: str

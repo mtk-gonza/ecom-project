@@ -32,32 +32,16 @@ class ProductRepositoryImpl(ProductRepository):
         return to_domain(model)
 
     def update(self, product: Product):
-        model = (
-            self.db.query(ProductModel)
-            .filter(ProductModel.id == product.id)
-            .first()
-        )
+        model = self.db.query(ProductModel).filter(ProductModel.id == product.id).first()
 
         if not model:
             return None
 
-        # 🔥 actualizás campos desde el dominio
-        model.sku = product.sku
-        model.slug = product.slug
-        model.name = product.name
-        model.description = product.description
-        model.price = product.price
-        model.currency = product.currency
-        model.cost_price = product.cost_price
-        model.discount = product.discount
-        model.stock = product.stock
-        model.barcode = product.barcode
-        model.installments = product.installments
-        model.special = product.special
-        model.is_featured = product.is_featured
-        model.status = product.status
-        model.licence_id = product.licence_id
-        model.category_id = product.category_id
+        updated_model = to_model(product)
+
+        for attr in vars(updated_model):
+            if attr != "id":
+                setattr(model, attr, getattr(updated_model, attr))
 
         self.db.commit()
         self.db.refresh(model)
