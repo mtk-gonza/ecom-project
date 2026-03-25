@@ -6,18 +6,13 @@ from app.application.exceptions import ValidationError
 
 @dataclass
 class License:
-    # 🔹 Identidad
     id: Optional[int]
-
-    # 🔹 Información básica
     name: str
     description: Optional[str] = None
     slug: Optional[str] = None
-
     # 🔹 Relaciones (solo IDs en dominio)
     product_ids: List[int] = field(default_factory=list)
     image_ids: List[int] = field(default_factory=list)
-
     # 🔹 Auditoría
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

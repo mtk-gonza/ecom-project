@@ -1,6 +1,6 @@
-from src.infrastructure.mappers.base_mapper import BaseMapper
-from src.domain.entities.specification_entity import Specification
-from src.infrastructure.database.models.specification_model import SpecificationModel
+from app.infrastructure.mappers.base_mapper import BaseMapper
+from app.domain.entities.specification import Specification
+from app.infrastructure.db.models.specification_model import SpecificationModel
 
 class SpecificationMapper(BaseMapper):
     @staticmethod

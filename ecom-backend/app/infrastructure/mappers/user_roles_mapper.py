@@ -1,6 +1,6 @@
-from src.infrastructure.mappers.base_mapper import BaseMapper
-from src.domain.entities.user_roles_entity import UserRoles
-from src.infrastructure.database.models.user_roles_model import UserRolesModel
+from app.infrastructure.mappers.base_mapper import BaseMapper
+from app.domain.entities.user_roles import UserRoles
+from app.infrastructure.db.models.user_roles_model import UserRolesModel
 
 class UserRolesMapper(BaseMapper):
     @staticmethod

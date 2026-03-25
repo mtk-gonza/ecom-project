@@ -6,8 +6,21 @@ class ProductMapper(BaseMapper):
     @staticmethod
     def to_domain(model: ProductModel) -> Product:
         product = BaseMapper.to_domain(model, Product)
-        product.specifications = [{"key": s.key, "value": s.value} for s in model.specifications]
-        product.images = [img.url for img in model.images]
+        product.specifications = [
+            {
+                'key': s.key, 
+                'value': s.value
+            } 
+            for s in model.specifications
+        ]
+        product.images = [
+            {
+                'path': i.path, 
+                'image_type': i.image_type, 
+                'is_primary': i.is_primary
+            }
+            for i in model.images
+        ]
         return product
 
     @staticmethod

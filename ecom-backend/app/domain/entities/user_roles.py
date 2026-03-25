@@ -6,15 +6,13 @@ from app.application.exceptions import ValidationError
 
 @dataclass
 class UserRoles:
-    # 🔹 Identidad
     id: Optional[int]
-
     # 🔹 Relación
     user_id: int
     role_id: int
-
     # 🔹 Auditoría
-    assigned_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     def __post_init__(self):
         if not isinstance(self.user_id, int) or self.user_id <= 0:

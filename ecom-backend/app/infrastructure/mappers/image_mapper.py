@@ -1,6 +1,6 @@
-from src.infrastructure.mappers.base_mapper import BaseMapper
-from src.domain.entities.image_entity import Image
-from src.infrastructure.database.models.image_model import ImageModel
+from app.infrastructure.mappers.base_mapper import BaseMapper
+from app.domain.entities.image import Image
+from app.infrastructure.db.models.image_model import ImageModel
 
 class ImageMapper(BaseMapper):
     @staticmethod

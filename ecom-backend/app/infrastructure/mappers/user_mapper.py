@@ -1,6 +1,6 @@
-from src.infrastructure.mappers.base_mapper import BaseMapper
-from src.domain.entities.user_entity import User
-from src.infrastructure.database.models.user_model import UserModel
+from app.infrastructure.mappers.base_mapper import BaseMapper
+from app.domain.entities.user import User
+from app.infrastructure.db.models.user_model import UserModel
 
 class UserMapper(BaseMapper):
     @staticmethod

@@ -6,23 +6,16 @@ from app.application.exceptions import ValidationError
 
 @dataclass
 class User:
-    # 🔹 Identidad
     id: Optional[int]
-
-    # 🔹 Información básica
     username: str
     email: str
     password_hash: str
     first_name: str
     last_name: str
-
-    # 🔹 Estado
     is_active: bool = True
     is_verified: bool = False
-
     # 🔹 Relaciones (solo IDs)
     role_ids: List[int] = field(default_factory=list)
-
     # 🔹 Auditoría
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

@@ -1,6 +1,6 @@
-from src.infrastructure.mappers.base_mapper import BaseMapper
-from src.domain.entities.role_entity import Role
-from src.infrastructure.database.models.role_model import RoleModel
+from app.infrastructure.mappers.base_mapper import BaseMapper
+from app.domain.entities.role import Role
+from app.infrastructure.db.models.role_model import RoleModel
 
 class LicenceMapper(BaseMapper):
     @staticmethod

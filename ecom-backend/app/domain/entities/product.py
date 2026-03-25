@@ -8,43 +8,27 @@ from app.application.exceptions import ValidationError
 
 @dataclass
 class Product:
-    # 🔹 Identidad
     id: Optional[int]
     sku: str
     slug: str
-
-    # 🔹 Información básica
     name: str
     description: Optional[str]
-
-    # 🔹 Pricing
     price: Decimal
     currency: Currency = Currency.ARS
     cost_price: Optional[Decimal] = None
     discount: Decimal = Decimal("0")
-
-    # 🔹 Stock
     stock: int = 0
-
-    # 🔹 Identificadores externos
     barcode: Optional[str] = None
-
-    # 🔹 Comercial
     installments: Optional[int] = None
     special: bool = False
     is_featured: bool = False
-
-    # 🔹 Estado
     status: ProductStatus = ProductStatus.ACTIVE
-
     # 🔹 Relaciones (IDs)
     licence_id: Optional[int] = None
     category_id: Optional[int] = None
-
     # 🔹 Datos flexibles
     specifications: List[Dict[str, str]] = field(default_factory=list)
     images: List[str] = field(default_factory=list)
-
     # 🔹 Auditoría
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

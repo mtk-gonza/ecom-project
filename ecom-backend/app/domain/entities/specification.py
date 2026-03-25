@@ -6,17 +6,13 @@ from app.application.exceptions import ValidationError
 
 @dataclass
 class Specification:
-    # 🔹 Identidad
     id: Optional[int]
-
     # 🔹 Asociación polimórfica
     entity_type: str
     entity_id: int
-
     # 🔹 Datos
     key: str
     value: str
-
     # 🔹 Auditoría
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
