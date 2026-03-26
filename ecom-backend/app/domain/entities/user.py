@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, List
-from app.application.exceptions import ValidationError
+from app.domain.exceptions import ValidationError
 
 
 @dataclass

@@ -2,15 +2,15 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.exc import SQLAlchemyError
-from src.domain.ports.license_repository import LicenseRepositoryPort
-from src.domain.entities.license_entity import License
-from src.domain.exceptions import NotFoundException
-from src.infrastructure.database.models.license_model import LicenseModel
-from src.infrastructure.mappers.license_mapper import LicenseMapper
+from app.domain.ports.license_repository import LicenseRepository
+from app.domain.entities.license import License
+from app.domain.exceptions import NotFoundException
+from app.infrastructure.db.models.license_model import LicenseModel
+from app.infrastructure.mappers.license_mapper import LicenseMapper
 
 logger = logging.getLogger(__name__)
 
-class LicenseRepositoryImpl(LicenseRepositoryPort):
+class LicenseRepositoryImpl(LicenseRepository):
     def __init__(self, db_session: Session):
         self.db = db_session
 

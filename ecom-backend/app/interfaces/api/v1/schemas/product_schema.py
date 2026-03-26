@@ -1,56 +1,46 @@
-from app.interfaces.api.v1.schemas.base_schema import BaseResponseSchema
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 from decimal import Decimal
-from datetime import datetime
 from app.domain.enums import Currency, ProductStatus
+from app.interfaces.api.v1.schemas.category_schema import CategoryResponse
+from app.interfaces.api.v1.schemas.license_schema import LicenseResponse
+from app.interfaces.api.v1.schemas.image_schema import ImageResponse
+from app.interfaces.api.v1.schemas.specification_schema import SpecificationResponse
 
-class ProductBaseSchema(BaseModel):
+# =========================
+# BASE
+# =========================
+class ProductBase(BaseModel):
     name: str
     description: Optional[str] = None
-
-    price: Decimal
+    price: Decimal = Field(..., ge=0)
     currency: Currency = Currency.ARS
     cost_price: Optional[Decimal] = None
-
-    stock: int = 0
+    stock: int = Field(0, ge=0)
     sku: str
     barcode: Optional[str] = None
-
-    discount: Decimal = Decimal("0")
+    discount: Decimal = Field(0, ge=0, le=100)
     installments: Optional[int] = None
-
     special: bool = False
     is_featured: bool = False
     status: ProductStatus = ProductStatus.ACTIVE
-
     licence_id: Optional[int] = None
     category_id: Optional[int] = None
 
-class ProductCreateSchema(ProductBaseSchema):
+
+# =========================
+# CREATE
+# =========================
+class ProductCreate(ProductBase):
     slug: str
-    images: Optional[List[str]] = []
-    specifications: Optional[List[Dict[str, str]]] = []
+    images: Optional[List[str]] = None
+    specifications: Optional[List[Dict[str, str]]] = None
 
-    @field_validator("price")
-    def validate_price(cls, v):
-        if v < 0:
-            raise ValueError("Precio inválido")
-        return v
 
-    @field_validator("discount")
-    def validate_discount(cls, v):
-        if v < 0 or v > 100:
-            raise ValueError("Descuento inválido")
-        return v
-
-    @field_validator("stock")
-    def validate_stock(cls, v):
-        if v < 0:
-            raise ValueError("Stock inválido")
-        return v
-
-class ProductUpdateSchema(BaseModel):
+# =========================
+# UPDATE
+# =========================
+class ProductUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     price: Optional[Decimal] = None
@@ -70,27 +60,24 @@ class ProductUpdateSchema(BaseModel):
     images: Optional[List[str]] = None
     specifications: Optional[List[Dict[str, str]]] = None
 
-class ProductResponseSchema(BaseResponseSchema):
+
+# =========================
+# RESPONSE
+# =========================
+class ProductResponse(ProductBase):
     id: int
     slug: str
-    name: str
-    description: str
-    price: Decimal
-    currency: Currency
-    cost_price: Decimal
-    stock: int
-    sku: str
-    barcode: str
-    discount: Decimal
-    installments: int
-    special: bool
-    is_featured: bool
-    status: ProductStatus
-    licence_id: int
-    category_id: int
-    images: List[str] = []
-    specifications: List[Dict[str, str]] = []
+    category: Optional[CategoryResponse] = None
+    license: Optional[LicenseResponse] = None
+    images: List[ImageResponse] = Field(default_factory=list)
+    specifications: List[SpecificationResponse] = Field(default_factory=list)
 
-class ProductDeleteResponseSchema(BaseModel):
+    model_config = {"from_attributes": True}
+
+
+# =========================
+# DELETE
+# =========================
+class ProductDeleteResponse(BaseModel):
     success: bool
     detail: str

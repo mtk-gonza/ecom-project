@@ -1,23 +1,40 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
-from app.interfaces.api.v1.schemas.product_schema import ProductResponseSchema
 
-class CategoryBaseSchema(BaseModel):
+# =========================
+# BASE
+# =========================
+class CategoryBase(BaseModel):
     name: str
     description: Optional[str] = None
 
-class CategoryCreateSchema(CategoryBaseSchema):
+# =========================
+# CREATE
+# =========================
+class CategoryCreate(CategoryBase):
     pass
 
-class CategoryUpdateSchema(BaseModel):
+# =========================
+# UPDATE
+# =========================
+class CategoryUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
 
-class CategoryResponseSchema(CategoryBaseSchema):
+# =========================
+# RESPONSE
+# =========================
+class CategoryResponse(CategoryBase):
     id: int
-    products: Optional[List[ProductResponseSchema]] = []
     created_at: datetime
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+# =========================
+# DELETE
+# =========================
+class CategoryDeleteResponse(BaseModel):
+    success: bool
+    detail: str

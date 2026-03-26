@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional, Dict
 from app.domain.enums import Currency, ProductStatus
-from app.application.exceptions import ValidationError
+from app.domain.exceptions import ValidationError
 
 
 @dataclass

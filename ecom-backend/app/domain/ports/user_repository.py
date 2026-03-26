@@ -20,3 +20,11 @@ class UserRepository(ABC):
     
     @abstractmethod
     def delete(self, user_id: int) -> None: ...
+
+    @abstractmethod
+    def add_role_to_user(self, user_id: int, role_id: int):
+        pass
+
+    @abstractmethod
+    def remove_role_from_user(self, user_id: int, role_id: int):
+        pass

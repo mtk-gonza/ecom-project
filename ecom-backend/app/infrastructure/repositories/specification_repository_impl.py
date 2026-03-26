@@ -2,11 +2,11 @@ import logging
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from src.domain.ports.specification_repository import ProductSpecRepositoryPort
-from src.domain.entities.specification_entity import Specification
-from src.domain.exceptions import NotFoundException
-from src.infrastructure.database.models.specification_model import SpecificationModel
-from src.infrastructure.mappers.specification_mapper import SpecificationMapper
+from app.domain.ports.specification_repository import ProductSpecRepositoryPort
+from app.domain.entities.specification import Specification
+from app.domain.exceptions import NotFoundError
+from app.infrastructure.db.models.specification_model import SpecificationModel
+from app.infrastructure.mappers.specification_mapper import SpecificationMapper
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class SpecificationRepositoryImpl(ProductSpecRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"Product Specification {product_specification_id} not found")
+                raise NotFoundError(f"Product Specification {product_specification_id} not found")
             return SpecificationMapper.to_domain(model)
         
         except SQLAlchemyError as e:
@@ -64,7 +64,7 @@ class SpecificationRepositoryImpl(ProductSpecRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"Product Specification {specification_id} not found")
+                raise NotFoundError(f"Product Specification {specification_id} not found")
             SpecificationMapper.update_model_from_domain(model, specification_data)
             self.db.commit()
             self.db.refresh(model)
@@ -82,7 +82,7 @@ class SpecificationRepositoryImpl(ProductSpecRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"Product Specification {product_spec_id} not found")
+                raise NotFoundError(f"Product Specification {product_spec_id} not found")
             self.db.delete(model)
             self.db.commit()
             return True

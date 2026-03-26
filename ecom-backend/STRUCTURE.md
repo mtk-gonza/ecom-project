@@ -1,10 +1,14 @@
 app/
 │
 ├── application/
-│   ├── schemas/
-│   │   └── product_schema.py
-│   └── services/
-│       └── product_service.py
+│   ├── dtos/
+│   │   └── product_dto.py
+│   ├── services/
+│   │   └── product_service.py
+│   ├── use_cases
+│   │   └── product/
+│   └── exceptions.py
+│
 │
 ├── config/
 │   └── settings.py
@@ -12,6 +16,7 @@ app/
 ├── domain/
 │   ├── entities/
 │   │   └── product.py
+│   ├── enums/
 │   └── ports/
 │       └── product_repository.py
 │
@@ -21,13 +26,19 @@ app/
 │   │   ├── session.py
 │   │   └── models/
 │   │       └── product_model.py
-│   │
+│   ├── logging/
+│   ├── mappers/
 │   └── repositories/
 │       └── product_repository_impl.py
 │
 ├── interfaces/
 │   └── api/
 │       └── v1/
-│           └── product_routes.py
+│           ├── dependencies/
+│           ├── routes/
+│           ├── schemas/
+│           └── handlers.py
+│
+├── utils/
 │
 └── main.py

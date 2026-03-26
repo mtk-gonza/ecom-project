@@ -2,11 +2,11 @@ import logging
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from src.domain.ports.image_repository import ImageRepositoryPort
-from src.domain.entities.image_entity import Image
-from src.domain.exceptions import NotFoundException
-from src.infrastructure.database.models.image_model import ImageModel
-from src.infrastructure.mappers.image_mapper import ImageMapper
+from app.domain.ports.image_repository import ImageRepositoryPort
+from app.domain.entities.image import Image
+from app.domain.exceptions import NotFoundError
+from app.infrastructure.db.models.image_model import ImageModel
+from app.infrastructure.mappers.image_mapper import ImageMapper
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class ImageRepositoryImpl(ImageRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"Image {image_id} not found")
+                raise NotFoundError(f"Image {image_id} not found")
             return ImageMapper.to_domain(model)
 
         except SQLAlchemyError as e:
@@ -67,7 +67,7 @@ class ImageRepositoryImpl(ImageRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"Image {image_id} not found")
+                raise NotFoundError(f"Image {image_id} not found")
             self.db.delete(model)
             self.db.commit()
             return True

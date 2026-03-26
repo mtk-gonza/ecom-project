@@ -1,46 +1,41 @@
 from pydantic import BaseModel
+from typing import Optional, List
 from datetime import datetime
-from app.domain.enums.entity_type import EntityType
-from app.domain.enums.image_type import ImageType
+from app.interfaces.api.v1.schemas.image_schema import ImageResponse, ImageCreate
 
 # =========================
 # BASE
 # =========================
-class ImageBase(BaseModel):
-    path: str
-    entity_id: int
-    entity_type: EntityType
-    image_type: ImageType
-    is_primary: bool = True
+class LicenseBase(BaseModel):
+    name: str
+    description: Optional[str]
+    images: Optional[List[ImageResponse]] = []
 
 # =========================
 # CREATE
 # =========================
-class ImageCreate(ImageBase):
+class LicenseCreate(LicenseBase):
     pass
 
 # =========================
 # UPDATE
 # =========================
-class ImageUpdate(ImageBase):
+class LicenseUpdate(LicenseBase):
     pass
 
 # =========================
 # RESPONSE
 # =========================
-class ImageResponse(BaseModel):
-    id: int
-    path: str
-    image_type: ImageType
-    is_primary: bool
+class LicenseResponse(LicenseBase):
+    id: int 
     created_at: datetime 
     updated_at: datetime
 
     model_config = {"from_attributes": True}
-    
+
 # =========================
 # DELETE
 # =========================
-class ImageDeleteResponse(BaseModel):
+class LicenseDeleteResponse(BaseModel):
     success: bool
     detail: str

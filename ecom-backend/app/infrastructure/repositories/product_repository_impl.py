@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.infrastructure.logging.logger import get_logger
 from app.domain.entities.product import Product
 from app.domain.ports.product_repository import ProductRepository
-from app.application.exceptions import NotFoundError
+from app.domain.exceptions import NotFoundError
 from app.infrastructure.db.models.product_model import ProductModel
 from app.infrastructure.mappers.product_mapper import ProductMapper
 

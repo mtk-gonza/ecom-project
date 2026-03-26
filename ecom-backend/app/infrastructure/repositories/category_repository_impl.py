@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.infrastructure.logging.logger import get_logger
 from app.domain.ports.category_repository import CategoryRepository
 from app.domain.entities.category import Category
-from app.application.exceptions import NotFoundError
+from app.domain.exceptions import NotFoundError
 from app.infrastructure.db.models.category_model import CategoryModel
 from app.infrastructure.mappers.category_mapper import CategoryMapper
 

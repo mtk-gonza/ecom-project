@@ -2,15 +2,16 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from src.domain.ports.user_repository import UserRepositoryPort
-from src.domain.entities.user_entity import User
-from src.domain.exceptions import NotFoundException
-from src.infrastructure.database.models.user_model import UserModel
-from src.infrastructure.mappers.user_mapper import UserMapper
+from app.domain.ports.user_repository import UserRepository
+from app.domain.entities.user import User
+from app.domain.exceptions import NotFoundError
+from app.infrastructure.db.models.user_model import UserModel
+from app.infrastructure.db.models.role_model import RoleModel
+from app.infrastructure.mappers.user_mapper import UserMapper
 
 logger = logging.getLogger(__name__)
 
-class UserRepositoryImpl(UserRepositoryPort):
+class UserRepositoryImpl(UserRepository):
     def __init__(self, db_session: Session):
         self.db = db_session
 
@@ -21,7 +22,7 @@ class UserRepositoryImpl(UserRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"User {user_id} not found")
+                raise NotFoundError(f"User {user_id} not found")
             return UserMapper.to_domain(model)
 
         except SQLAlchemyError as e:
@@ -35,7 +36,7 @@ class UserRepositoryImpl(UserRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"User {username} not found")
+                raise NotFoundError(f"User {username} not found")
             return UserMapper.to_domain(model)
 
         except SQLAlchemyError as e:
@@ -78,7 +79,7 @@ class UserRepositoryImpl(UserRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"User {user_id} not found")
+                raise NotFoundError(f"User {user_id} not found")
             UserMapper.update_model_from_domain(model, user_data)
             self.db.commit()
             self.db.refresh(model)
@@ -96,7 +97,7 @@ class UserRepositoryImpl(UserRepositoryPort):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"User {user_id} not found")
+                raise NotFoundError(f"User {user_id} not found")
             self.db.delete(model)
             self.db.commit()
             return True
@@ -105,3 +106,25 @@ class UserRepositoryImpl(UserRepositoryPort):
             logger.error(f"Error deleting user: {e}")
             self.db.rollback()
             raise
+
+
+    
+    def add_role_to_user(self, user_id: int, role_id: int):
+        user = self.db.get(UserModel, user_id)
+        role = self.db.get(RoleModel, role_id)
+
+        if not user or not role:
+            raise NotFoundError("User o Role no encontrado")
+
+        user.roles.append(role)
+        self.db.commit()
+
+    def remove_role_from_user(self, user_id: int, role_id: int):
+        user = self.db.get(UserModel, user_id)
+        role = self.db.get(RoleModel, role_id)
+
+        if not user or not role:
+            raise NotFoundError("User o Role no encontrado")
+
+        user.roles.remove(role)
+        self.db.commit()
