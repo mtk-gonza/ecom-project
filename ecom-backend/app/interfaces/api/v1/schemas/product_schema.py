@@ -6,6 +6,7 @@ from app.interfaces.api.v1.schemas.category_schema import CategoryResponse
 from app.interfaces.api.v1.schemas.license_schema import LicenseResponse
 from app.interfaces.api.v1.schemas.image_schema import ImageResponse
 from app.interfaces.api.v1.schemas.specification_schema import SpecificationResponse
+from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 
 # =========================
 # BASE
@@ -64,15 +65,12 @@ class ProductUpdate(BaseModel):
 # =========================
 # RESPONSE
 # =========================
-class ProductResponse(ProductBase):
-    id: int
+class ProductResponse(ProductBase, IDSchema, TimestampSchema):
     slug: str
     category: Optional[CategoryResponse] = None
     license: Optional[LicenseResponse] = None
     images: List[ImageResponse] = Field(default_factory=list)
     specifications: List[SpecificationResponse] = Field(default_factory=list)
-
-    model_config = {"from_attributes": True}
 
 
 # =========================

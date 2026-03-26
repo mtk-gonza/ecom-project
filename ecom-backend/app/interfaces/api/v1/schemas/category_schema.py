@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
+from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 
 # =========================
 # BASE
@@ -25,12 +25,8 @@ class CategoryUpdate(BaseModel):
 # =========================
 # RESPONSE
 # =========================
-class CategoryResponse(CategoryBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-
-    model_config = {"from_attributes": True}
+class CategoryResponse(CategoryBase, IDSchema, TimestampSchema):
+    pass
 
 # =========================
 # DELETE

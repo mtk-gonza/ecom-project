@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
-from datetime import datetime
 from app.interfaces.api.v1.schemas.image_schema import ImageResponse, ImageCreate
+from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 
 # =========================
 # BASE
@@ -26,12 +26,8 @@ class LicenseUpdate(LicenseBase):
 # =========================
 # RESPONSE
 # =========================
-class LicenseResponse(LicenseBase):
-    id: int 
-    created_at: datetime 
-    updated_at: datetime
-
-    model_config = {"from_attributes": True}
+class LicenseResponse(LicenseBase, IDSchema, TimestampSchema):
+    pass
 
 # =========================
 # DELETE

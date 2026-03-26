@@ -1,8 +1,12 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-from app.schemas.role_schema import RoleResponse
+from app.interfaces.api.v1.schemas.role_schema import RoleResponse
+from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 
+# =========================
+# BASE
+# =========================
 class UserBase(BaseModel):
     username: str
     email: str    
@@ -11,9 +15,15 @@ class UserBase(BaseModel):
     telefono: Optional[str] = None
     is_active: Optional[bool] = True
 
+# =========================
+# CREATE
+# =========================
 class UserCreate(UserBase):
     password: str
 
+# =========================
+# UPDATE
+# =========================
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
@@ -23,14 +33,15 @@ class UserUpdate(BaseModel):
     telefono: Optional[str] = None
     is_active: Optional[bool] = None
 
-class UserResponse(UserBase):
-    id: int
-    roles: List[RoleResponse] = []
-    created_at: datetime
-    updated_at: datetime
+# =========================
+# RESPONSE
+# =========================
+class UserResponse(UserBase, IDSchema, TimestampSchema):
+    pass
 
-    class Config:
-        from_attributes = True
-
+# =========================
+# DELETE
+# =========================
 class UserDeleteResponse(BaseModel):
+    success: bool
     detail: str

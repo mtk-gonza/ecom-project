@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from app.application.exceptions import (
+from app.domain.exceptions import (
     ApplicationError,
     NotFoundError,
     ValidationError,

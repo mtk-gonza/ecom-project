@@ -1,23 +1,35 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
+from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 
+# =========================
+# BASE
+# =========================
 class RoleBase(BaseModel):
     name: str
     description: Optional[str]
 
+# =========================
+# CREATE
+# =========================
 class RoleCreate(RoleBase):
     pass
 
+# =========================
+# UPDATE
+# =========================
 class RoleUpdate(RoleBase):
     pass
 
-class RoleResponse(RoleBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    class Config:
-        from_attributes = True
+# =========================
+# RESPONSE
+# =========================
+class RoleResponse(RoleBase, IDSchema, TimestampSchema):
+    pass
 
+# =========================
+# DELETE
+# =========================
 class RoleDelete(BaseModel):
-    message: str
+    success: bool
+    detail: str

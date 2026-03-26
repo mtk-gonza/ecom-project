@@ -1,7 +1,7 @@
 from pydantic import BaseModel
-from datetime import datetime
 from app.domain.enums.entity_type import EntityType
 from app.domain.enums.image_type import ImageType
+from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 
 # =========================
 # BASE
@@ -28,15 +28,8 @@ class ImageUpdate(ImageBase):
 # =========================
 # RESPONSE
 # =========================
-class ImageResponse(BaseModel):
-    id: int
-    path: str
-    image_type: ImageType
-    is_primary: bool
-    created_at: datetime 
-    updated_at: datetime
-
-    model_config = {"from_attributes": True}
+class ImageResponse(ImageBase, IDSchema, TimestampSchema):
+    pass
     
 # =========================
 # DELETE

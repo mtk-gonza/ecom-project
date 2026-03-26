@@ -1,26 +1,38 @@
 from pydantic import BaseModel
 from datetime import datetime
-from src.domain.enums.entity_type import EntityType
+from app.domain.enums.entity_type import EntityType
+from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 
+# =========================
+# BASE
+# =========================
 class SpecificationBase(BaseModel):
     entity_id: int
     entity_type: EntityType
     name: str
     value: str 
 
+# =========================
+# CREATE
+# =========================
 class SpecificationCreate(SpecificationBase):
-    created_at: datetime
+    pass
 
+# =========================
+# UPDATE
+# =========================
 class SpecificationUpdate(SpecificationBase):
-    updated_at: datetime
+    pass
 
-class SpecificationResponse(SpecificationBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    product_id: int
-    class Config:
-        from_attributes = True
+# =========================
+# RESPONSE
+# =========================
+class SpecificationResponse(SpecificationBase, IDSchema, TimestampSchema):
+    pass
 
+# =========================
+# DELETE
+# =========================
 class SpecificationDelete(BaseModel):
-    message: str
+    success: bool
+    detail: str
