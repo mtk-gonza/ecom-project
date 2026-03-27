@@ -1,6 +1,5 @@
 class ApplicationError(Exception):
     """Base para todas las excepciones de la aplicación"""
-
     def __init__(self, message: str, code: str = "error"):
         self.message = message
         self.code = code
@@ -10,7 +9,7 @@ class ApplicationError(Exception):
 class NotFoundError(ApplicationError):
     """Recurso no encontrado"""
     # raise NotFoundError(f"Producto con id {product_id} no existe")
-    def __init__(self, message: str = "Recurso no encontrado"):
+    def __init__(self, message: str = 'Resource not found.'):
         super().__init__(message, code="not_found")
 
 

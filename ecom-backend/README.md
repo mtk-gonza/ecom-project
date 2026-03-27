@@ -15,7 +15,7 @@ API REST desarrollada con **FastAPI**, conectada a una base de datos **MySql**, 
 
 ## 📦 Instalación y ▶️ Ejecución del servidor
 
-Recordar copiar, completar y renombrar el .env.example a .env dentro de /dao-backend
+Recordar copiar, completar y renombrar el .env.example a .env dentro de /ecom-backend
 ```bash
 
 - Clonar el repositorio:

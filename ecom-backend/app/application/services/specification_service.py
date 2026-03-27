@@ -1,41 +1,73 @@
-from app.core.ports.product_spec_repository import ProductSpecRepository
-from app.core.entities.product_specification_entity import ProductSpecification
-from typing import List, Optional
+from app.infrastructure.logging.logger import get_logger
+from app.domain.ports.specification_repository import SpecificationRepository
+from app.domain.entities.specification import Specification
+from app.domain.exceptions import NotFoundError, ValidationError, ConflictError
+from app.interfaces.api.v1.schemas.specification_schema import SpecificationCreate, SpecificationUpdate, SpecificationResponse
 
-class CreateProductSpecificationUseCase:
-    def __init__(self, repository: ProductSpecRepository):
-        self.repository = repository
+logger = get_logger(__name__)
 
-    async def execute(self, product_specification: ProductSpecification) -> ProductSpecification:
-        # Ejemplo de validación del dominio
-        if not product_specification.name:
-            raise ValueError("El producto debe tener nombre")
-        return await self.repository.create(product_specification)
+class SpecificationService:
+    def __init__(self, specification_repository: SpecificationRepository):
+        self.specification_repository = specification_repository
 
-class GetProductSpecificationUseCase:
-    def __init__(self, repository: ProductSpecRepository):
-        self.repository = repository
+    # =========================
+    # GET ALL
+    # =========================
+    def get_specifications(self, skip: int = 0, limit: int = 100) -> list[SpecificationResponse]:
+        logger.info('Retrieving specifications list.')
+        return self.specification_repository.get_all(skip=skip, limit=limit)
 
-    async def execute(self, product_specification_id: int) -> Optional[ProductSpecification]:
-        return await self.repository.get_by_id(product_specification_id)
+    # =========================
+    # GET BY ID
+    # =========================
+    def get_specification(self, specification_id: int) -> SpecificationResponse:
+        logger.info(f'Searching for specification with ID: {specification_id}.')
+        specification = self.specification_repository.get_by_id(specification_id)
+        if not specification:
+            logger.warning(f'Specification with ID: {specification_id} not found.')
+            raise NotFoundError(f'Specification with ID: {specification_id} not found.')
+        return specification
 
-class ListProductSpecificationsUseCase:
-    def __init__(self, repository: ProductSpecRepository):
-        self.repository = repository
+    # =========================
+    # CREATE
+    # =========================
+    def create_specification(self, spec_data: SpecificationCreate) -> SpecificationResponse:
+        logger.info(f'Creating specification with entity type: {spec_data.entity_type} and entity ID: {spec_data.entity_id}.')
+        specification = Specification(
+            id=None,
+            entity_type=spec_data.entity_type,
+            entity_id=spec_data.entity_id,
+            key=spec_data.key,
+            value=spec_data.value
+        )
+        logger.info(f'New specification created with entity type: {spec_data.entity_type} and entity ID: {spec_data.entity_id}.')
+        return specification
 
-    async def execute(self) -> List[ProductSpecification]:
-        return await self.repository.list()
+    # =========================
+    # UPDATE
+    # =========================
+    def update_specification(self, spec_id: int, spec_data: SpecificationUpdate) -> SpecificationResponse:
+        logger.info(f"Actualizando producto id={spec_id}")
+        existing = self.specification_repository.get_by_id(spec_id)
+        if not existing:
+            logger.warning(f'Specification with ID: {spec_id} not found.')
+            raise NotFoundError(f'Specification with ID: {spec_id} not found.')
+        updated_spec = Specification(
+            id=existing.id, 
+            entity_type=spec_data.entity_type or existing.entity_type,
+            entity_id=spec_data.entity_id or existing.entity_id,
+            key=spec_data.key or existing.key,
+            value=spec_data.value or existing.value
+        )
+        return self.specification_repository.update(updated_spec)
 
-class UpdateProductSpecificationUseCase:
-    def __init__(self, repository: ProductSpecRepository):
-        self.repository = repository
-
-    async def execute(self, product: ProductSpecification) -> ProductSpecification:
-        return await self.repository.update(product)
-
-class DeleteProductSpecificationUseCase:
-    def __init__(self, repository: ProductSpecRepository):
-        self.repository = repository
-
-    async def execute(self, product_specification_id: int) -> None:
-        await self.repository.delete(product_specification_id)
+    # =========================
+    # DELETE
+    # =========================
+    def delete_specification(self, spec_id: int) -> bool:
+        logger.info(f'Deleting specification with ID: {spec_id}.')
+        existing = self.specification_repository.get_by_id(spec_id)
+        if not existing:
+            logger.warning(f'Specification with ID: {spec_id} not found.')
+            raise NotFoundError(f'Specification with ID: {spec_id} not found.')
+        return self.specification_repository.delete(spec_id)

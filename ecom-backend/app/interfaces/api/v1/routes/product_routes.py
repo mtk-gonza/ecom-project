@@ -1,106 +1,53 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import List
-
-from app.infrastructure.db.session import get_db
-
+from fastapi import APIRouter, Depends, Query, status
+from typing import List, Annotated
+from app.application.services.product_service import ProductService
+from app.interfaces.api.v1.dependencies.services import get_product_service
 from app.interfaces.api.v1.schemas.product_schema import (
-    ProductCreateSchema,
-    ProductUpdateSchema,
-    ProductResponseSchema,
-    ProductDeleteResponseSchema,
+    ProductCreate,
+    ProductUpdate,
+    ProductResponse,
+    ProductDeleteResponse
 )
 
-from app.application.dtos.product_dto import (
-    CreateProductDTO,
-    UpdateProductDTO,
-)
+router = APIRouter(prefix='/products', tags=['products'])
 
-from app.application.use_cases.product.create_product import CreateProductUseCase
-from app.application.use_cases.product.update_product import UpdateProductUseCase
-from app.application.use_cases.product.delete_product import DeleteProductUseCase
-
-from app.infrastructure.repositories.product_repository_impl import ProductRepositoryImpl
-
-
-product_router = APIRouter(prefix="/products", tags=["Products"])
-
+ProductServiceDep = Annotated[ProductService, Depends(get_product_service)]
 
 # =========================
-# 🔹 DEPENDENCY
+# GET ALL
 # =========================
-def get_product_repository(db: Session = Depends(get_db)):
-    return ProductRepositoryImpl(db)
-
-# =========================
-# 🚀 GET
-# =========================
-@product_router.get("/", response_model=List[ProductResponseSchema])
-def get_products(repo=Depends(get_product_repository)):
-    return repo.get_all()
-
-@product_router.get("/{product_id}", response_model=ProductResponseSchema)
-def get_product(product_id: int, repo=Depends(get_product_repository)):
-    product = repo.get_by_id(product_id)
-    if not product:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return product
+@router.get('/', response_model=List[ProductResponse])
+def get_products(service: ProductServiceDep, skip: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=100)) -> List[ProductResponse]:
+    return service.get_products(skip=skip, limit=limit)
 
 # =========================
-# 📥 CREATE
+# GET BY ID
 # =========================
-@product_router.post("/", response_model=ProductResponseSchema)
-def create_product(
-    body: ProductCreateSchema,
-    repo=Depends(get_product_repository),
-):
-    use_case = CreateProductUseCase(repo)
-
-    dto = CreateProductDTO(**body.model_dump())
-
-    product = use_case.execute(dto)
-
-    return product
-
+@router.get('/{product_id}', response_model=ProductResponse)
+def get_product(product_id: int, service: ProductServiceDep) -> ProductResponse:
+    return service.get_product(product_id)
 
 # =========================
-# 🔄 UPDATE
+# CREATE
 # =========================
-@product_router.put("/{product_id}", response_model=ProductResponseSchema)
-def update_product(
-    product_id: int,
-    body: ProductUpdateSchema,
-    repo=Depends(get_product_repository),
-):
-    use_case = UpdateProductUseCase(repo)
-
-    dto = UpdateProductDTO(
-        id=product_id,
-        **body.model_dump(exclude_unset=True)
-    )
-
-    try:
-        product = use_case.execute(dto)
-        return product
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+@router.post('/', response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
+def create_product(product_data: ProductCreate, service: ProductServiceDep) -> ProductResponse:
+    return service.create_product(product_data)
 
 # =========================
-# 🗑️ DELETE
+# UPDATE
 # =========================
-@product_router.delete("/{product_id}", response_model=ProductDeleteResponseSchema)
-def delete_product(
-    product_id: int,
-    repo=Depends(get_product_repository),
-):
-    use_case = DeleteProductUseCase(repo)
+@router.put('/{product_id}', response_model=ProductResponse)
+def update_product(product_id: int, product_data: ProductUpdate, service: ProductServiceDep) -> ProductResponse:
+    return service.update_product(product_id, product_data)
 
-    try:
-        use_case.execute(product_id)
-        return {
-            "success": True,
-            "detail": "Producto eliminado correctamente"
-        }
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=str(e))
+# =========================
+# DELETE
+# =========================
+@router.delete('/{product_id}', response_model=ProductDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+def delete_product(product_id: int, service: ProductServiceDep):
+    service.delete_product(product_id)
+    return {
+        'success': True,
+        'detail': f'Producto {product_id} eliminado correctamente'
+    }

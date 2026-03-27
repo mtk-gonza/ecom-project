@@ -1,54 +1,50 @@
 from fastapi import APIRouter, Depends, Query, status
-from typing import List
+from typing import List, Annotated
 from app.application.services.category_service import CategoryService
 from app.interfaces.api.v1.dependencies.services import get_category_service
 from app.interfaces.api.v1.schemas.category_schema import (
     CategoryCreate,
     CategoryResponse,
-    CategoryUpdate
+    CategoryUpdate,
+    CategoryDeleteResponse
 )
 
-router = APIRouter(prefix="/categories", tags=["categories"])
+router = APIRouter(prefix='/categories', tags=['categories'])
 
+CategoryServiceDep = Annotated[CategoryService, Depends(get_category_service)]
 
-@router.get("/", response_model=List[CategoryResponse])
-def get_categories(
-    skip: int = Query(0, ge=0),
-    limit: int = Query(100, ge=1, le=100),
-    service: CategoryService = Depends(get_category_service)
-):
+# =========================
+# GET ALL
+# =========================
+@router.get('/', response_model=List[CategoryResponse])
+def get_categories(service: CategoryServiceDep, skip: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=100)) -> List[CategoryService]:
     return service.get_categories(skip=skip, limit=limit)
 
-
-@router.get("/{category_id}", response_model=CategoryResponse)
-def get_category(
-    category_id: int,
-    service: CategoryService = Depends(get_category_service)
-):
+# =========================
+# GET BY ID
+# =========================
+@router.get('/{category_id}', response_model=CategoryResponse)
+def get_category(category_id: int, service: CategoryServiceDep) -> CategoryResponse:
     return service.get_category(category_id)
 
-
-@router.post("/", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
-def create_category(
-    category: CategoryCreate,
-    service: CategoryService = Depends(get_category_service)
-):
+# =========================
+# CREATE
+# =========================
+@router.post('/', response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
+def create_category(category: CategoryCreate, service: CategoryServiceDep) -> CategoryResponse:
     return service.create_category(category)
 
-
-@router.put("/{category_id}", response_model=CategoryResponse)
-def update_category(
-    category_id: int,
-    category: CategoryUpdate,
-    service: CategoryService = Depends(get_category_service)
-):
+# =========================
+# UPDATE
+# =========================
+@router.put('/{category_id}', response_model=CategoryResponse)
+def update_category(category_id: int, category: CategoryUpdate, service: CategoryServiceDep) -> CategoryResponse:
     return service.update_category(category_id, category)
 
-
-@router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_category(
-    category_id: int,
-    service: CategoryService = Depends(get_category_service)
-):
+# =========================
+# DELETE
+# =========================
+@router.delete('/{category_id}', response_model=CategoryDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+def delete_category(category_id: int, service: CategoryServiceDep):
     service.delete_category(category_id)
     return None
