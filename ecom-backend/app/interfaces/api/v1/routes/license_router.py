@@ -1,86 +1,53 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List, Dict, Any
-
-from app.core.config.database import get_db
-from app.adapters.persistence.repositories.licence_repository_impl import LicenceRepositoryImpl
-from app.core.use_cases.licence_use_cases import (
-    CreateLicenceUseCase,
-    GetLicenceUseCase,
-    ListLicencesUseCase,
-    UpdateLicenceUseCase,
-    DeleteLicenceUseCase
-)
-from app.schemas.licence_schema import LicenceCreate, LicenceUpdate, LicenceResponse
-from app.core.entities.licence_entity import Licence as LicenceEntity
-from app.core.exceptions.licence_exceptions import (
-    LicenceNotFoundError,
-    LicenceCreationError,
-    LicenceUpdateError,
-    LicenceDeleteError
+from fastapi import APIRouter, Depends, Query, status
+from typing import List, Annotated
+from app.application.services.license_service import LicenseService
+from app.interfaces.api.v1.dependencies.services import get_product_service
+from app.interfaces.api.v1.schemas.license_schema import (
+    LicenseCreate,
+    LicenseUpdate,
+    LicenseResponse,
+    LicenseDeleteResponse
 )
 
-router = APIRouter(prefix='/licences', tags=['LICENCES'], responses={404: {'description': 'Not found'}})
+license_router = APIRouter(prefix='/licenses', tags=['licenses'])
 
-async def get_licence_repository(db=Depends(get_db)) -> LicenceRepositoryImpl:
-    return LicenceRepositoryImpl(db)
+LicenseServiceDep = Annotated[LicenseService, Depends(get_product_service)]
 
-def get_licence_use_cases(repository=Depends(get_licence_repository)) -> Dict[str, Any]:
+# =========================
+# GET ALL
+# =========================
+@license_router.get('/', response_model=List[LicenseResponse])
+def get_licenses(service: LicenseServiceDep, skip: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=100)) -> List[LicenseResponse]:
+    return service.get_licenses(skip=skip, limit=limit)
+
+# =========================
+# GET BY ID
+# =========================
+@license_router.get('/{license_id}', response_model=LicenseResponse)
+def get_license(license_id: int, service: LicenseServiceDep) -> LicenseResponse:
+    return service.get_license(license_id)
+
+# =========================
+# CREATE
+# =========================
+@license_router.post('/', response_model=LicenseResponse, status_code=status.HTTP_201_CREATED)
+def create_product(license_data: LicenseCreate, service: LicenseServiceDep) -> LicenseResponse:
+    return service.create_license(license_data)
+
+# =========================
+# UPDATE
+# =========================
+@license_router.put('/{license_id}', response_model=LicenseResponse)
+def update_license(license_id: int, license_data: LicenseUpdate, service: LicenseServiceDep) -> LicenseResponse:
+    return service.update_license(license_id, license_data)
+
+# =========================
+# DELETE
+# =========================
+@license_router.delete('/{product_id}', response_model=LicenseDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+def deletelicense(license_id: int, service: LicenseServiceDep):
+    service.delete_license(license_id)
     return {
-        'create': CreateLicenceUseCase(repository),
-        'get': GetLicenceUseCase(repository),
-        'list': ListLicencesUseCase(repository),
-        'update': UpdateLicenceUseCase(repository),
-        'delete': DeleteLicenceUseCase(repository)
+        'success': True,
+        'detail': f'License with ID: {license_id} successfully removed.'
     }
-
-@router.post('/', response_model=LicenceResponse, status_code=status.HTTP_201_CREATED, summary='CREATE new Licence')
-async def create_licence(licence_in: LicenceCreate, use_cases=Depends(get_licence_use_cases)):
-    licence_entity = LicenceEntity(
-        id=None,
-        name=licence_in.name,
-        description=licence_in.description
-    )
-    try:
-        licence = await use_cases['create'].execute(licence_entity)
-        return licence
-    except LicenceCreationError:
-        raise HTTPException(status_code=400, detail='Failed to create licence')
-
-@router.get('/', response_model=List[LicenceResponse], summary='LIST ALL Licences')
-async def list_licences(use_cases=Depends(get_licence_use_cases)):
-    categories = await use_cases['list'].execute()
-    return categories
-
-@router.get('/{licence_id}', response_model=LicenceResponse, summary='GET Licence by ID')
-async def get_licence(licence_id: int, use_cases=Depends(get_licence_use_cases)):
-    try:
-        licence = await use_cases['get'].execute(licence_id)
-        return licence
-    except LicenceNotFoundError:
-        raise HTTPException(status_code=404, detail='Licence not found')
-
-@router.put('/{licence_id}', response_model=LicenceResponse, summary='UPDATE Licence by ID')
-async def update_licence(licence_id: int, licence_in: LicenceUpdate, use_cases=Depends(get_licence_use_cases)):
-    try:
-        existing = await use_cases['get'].execute(licence_id)
-    except LicenceNotFoundError:    
-        raise HTTPException(status_code=404, detail='Licence not found')
-    updated_entity = LicenceEntity(
-        id=licence_id,
-        name=licence_in.name if licence_in.name is not None else existing.name,
-        description=licence_in.description if licence_in.name is not None else existing.description,
-    )
-    try:
-        updated_licence = await use_cases['update'].execute(updated_entity)
-        return updated_licence
-    except LicenceUpdateError:
-        raise HTTPException(status_code=500, detail='Failed to update licence')
-
-@router.delete('/{licence_id}', status_code=status.HTTP_204_NO_CONTENT, summary='Delete a licence')
-async def delete_licence(licence_id: int, use_cases=Depends(get_licence_use_cases)):
-    try:
-        await use_cases['get'].execute(licence_id)
-    except LicenceNotFoundError:
-        raise HTTPException(status_code=404, detail='Licence not found')
-    except LicenceDeleteError:
-        raise HTTPException(status_code=500, detail='Failed to delete licence')

@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException
-from app.schemas.auth_schema import TokenData
-from app.adapters.api.dependency import get_current_user
+from app.interfaces.api.v1.schemas.auth_schema import TokenData
+from app.interfaces.api.v1.dependencies import get_current_user
 
 def has_role(required_role: str):
     def verify_role(user: TokenData = Depends(get_current_user)):

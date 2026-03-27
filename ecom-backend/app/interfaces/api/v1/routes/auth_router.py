@@ -8,14 +8,14 @@ from app.application.services.auth_service import AuthService
 from app.interfaces.api.v1.schemas.auth_schema import Token, TokenData
 from app.domain.exceptions import ValidationError
 
-router = APIRouter(
+auth_router = APIRouter(
     prefix="/auth",
     tags=["auth"],
     responses={401: {"description": "Unauthorized"}}
 )
 
 
-@router.post(
+@auth_router.post(
     "/token",
     summary="Get Access Token",
     response_model=Token,
@@ -36,7 +36,7 @@ def login_for_access_token(
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.get(
+@auth_router.get(
     "/me",
     summary="Get current logged-in user",
     response_model=TokenData,

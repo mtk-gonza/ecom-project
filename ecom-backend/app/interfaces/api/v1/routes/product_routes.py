@@ -9,45 +9,45 @@ from app.interfaces.api.v1.schemas.product_schema import (
     ProductDeleteResponse
 )
 
-router = APIRouter(prefix='/products', tags=['products'])
+product_router = APIRouter(prefix='/products', tags=['products'])
 
 ProductServiceDep = Annotated[ProductService, Depends(get_product_service)]
 
 # =========================
 # GET ALL
 # =========================
-@router.get('/', response_model=List[ProductResponse])
+@product_router.get('/', response_model=List[ProductResponse])
 def get_products(service: ProductServiceDep, skip: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=100)) -> List[ProductResponse]:
     return service.get_products(skip=skip, limit=limit)
 
 # =========================
 # GET BY ID
 # =========================
-@router.get('/{product_id}', response_model=ProductResponse)
+@product_router.get('/{product_id}', response_model=ProductResponse)
 def get_product(product_id: int, service: ProductServiceDep) -> ProductResponse:
     return service.get_product(product_id)
 
 # =========================
 # CREATE
 # =========================
-@router.post('/', response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
+@product_router.post('/', response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
 def create_product(product_data: ProductCreate, service: ProductServiceDep) -> ProductResponse:
     return service.create_product(product_data)
 
 # =========================
 # UPDATE
 # =========================
-@router.put('/{product_id}', response_model=ProductResponse)
+@product_router.put('/{product_id}', response_model=ProductResponse)
 def update_product(product_id: int, product_data: ProductUpdate, service: ProductServiceDep) -> ProductResponse:
     return service.update_product(product_id, product_data)
 
 # =========================
 # DELETE
 # =========================
-@router.delete('/{product_id}', response_model=ProductDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+@product_router.delete('/{product_id}', response_model=ProductDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(product_id: int, service: ProductServiceDep):
     service.delete_product(product_id)
     return {
         'success': True,
-        'detail': f'Producto {product_id} eliminado correctamente'
+        'detail': f'Product with ID: {product_id} successfully removed.'
     }

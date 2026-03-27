@@ -54,9 +54,9 @@ class CategoryService:
             logger.warning(f'Category with ID: {category_id} not found.')
             raise NotFoundError(f'Category with ID: {category_id} not found.')
         updated_category = Category(
-            id=category_id,
-            name=category_data.name,
-            description=category_data.description
+            id=existing.id,
+            name=category_data.name or existing.name,
+            description=category_data.description or existing.description
         )
         return self.category_repository.update(category_id, updated_category)
     

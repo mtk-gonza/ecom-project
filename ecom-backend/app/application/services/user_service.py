@@ -49,7 +49,7 @@ class UserService:
     # =========================
     # UPDATE
     # =========================
-    def update_product(self, user_id: int, user_data: UserUpdate):
+    def update_user(self, user_id: int, user_data: UserUpdate):
         logger.info(f'Updating user with ID: {user_id}.')
         existing = self.user_repository.get_by_id(user_id)
         if not existing:
@@ -71,7 +71,7 @@ class UserService:
     # =========================
     # DELETE
     # =========================
-    def delete_product(self, user_id: int) -> bool:
+    def delete_user(self, user_id: int) -> bool:
         logger.info(f'Deleting user with ID: {user_id}.')
         existing = self.user_repository.get_by_id(user_id)
         if not existing:

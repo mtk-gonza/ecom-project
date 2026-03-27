@@ -33,6 +33,6 @@ class SpecificationResponse(SpecificationBase, IDSchema, TimestampSchema):
 # =========================
 # DELETE
 # =========================
-class SpecificationDelete(BaseModel):
+class SpecificationDeleteResponse(BaseModel):
     success: bool
     detail: str

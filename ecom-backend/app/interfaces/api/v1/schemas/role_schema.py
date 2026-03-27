@@ -30,6 +30,6 @@ class RoleResponse(RoleBase, IDSchema, TimestampSchema):
 # =========================
 # DELETE
 # =========================
-class RoleDelete(BaseModel):
+class RoleDeleteResponse(BaseModel):
     success: bool
     detail: str
