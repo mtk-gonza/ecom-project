@@ -3,7 +3,7 @@
 ## PASO 1  
 Clonar repositorio:
 ```bash
-git clone https://github.com/mtk-gonza/ecom-project
+git clone https://github.com/mtk-gonza/ecom-project.git
 ```
 
 ## PASO 2  
@@ -47,7 +47,7 @@ services:
     ports:
       - ${WEB_PORT}:80
     depends_on:
-      - dao-backend
+      - ecom-backend
     restart: always
 ```
 
