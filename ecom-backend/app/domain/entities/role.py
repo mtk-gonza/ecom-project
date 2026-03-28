@@ -9,8 +9,6 @@ class Role:
     id: Optional[int]
     name: str
     description: Optional[str] = None
-    # 🔹 Relaciones (solo IDs)
-    user_ids: List[int] = field(default_factory=list)
     # 🔹 Auditoría
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

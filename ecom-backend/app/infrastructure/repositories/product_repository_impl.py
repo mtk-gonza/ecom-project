@@ -15,9 +15,9 @@ class ProductRepositoryImpl(ProductRepository):
         self.db = db
 
 
-    def get_all(self) -> list[Product]:
+    def get_all(self, skip: int = 0, limit: int = 100) -> list[Product]:
         try:
-            stmt = select(ProductModel)
+            stmt = select(ProductModel).offset(skip).limit(limit)
             result = self.db.execute(stmt)
             models = result.scalars().all()
             return [ProductMapper.to_domain(m) for m in models]

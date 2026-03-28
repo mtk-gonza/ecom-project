@@ -28,7 +28,9 @@ class SpecificationUpdate(SpecificationBase):
 # RESPONSE
 # =========================
 class SpecificationResponse(SpecificationBase, IDSchema, TimestampSchema):
-    pass
+    model_config = {
+        "from_attributes": True
+    }
 
 # =========================
 # DELETE

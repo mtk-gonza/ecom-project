@@ -2,11 +2,10 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 from decimal import Decimal
 from app.domain.enums import Currency, ProductStatus
-from app.interfaces.api.v1.schemas.category_schema import CategoryResponse
-from app.interfaces.api.v1.schemas.license_schema import LicenseResponse
 from app.interfaces.api.v1.schemas.image_schema import ImageResponse
 from app.interfaces.api.v1.schemas.specification_schema import SpecificationResponse
 from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
+
 
 # =========================
 # BASE
@@ -25,7 +24,7 @@ class ProductBase(BaseModel):
     special: bool = False
     is_featured: bool = False
     status: ProductStatus = ProductStatus.ACTIVE
-    licence_id: Optional[int] = None
+    license_id: Optional[int] = None
     category_id: Optional[int] = None
 
 
@@ -55,7 +54,7 @@ class ProductUpdate(BaseModel):
     special: Optional[bool] = None
     is_featured: Optional[bool] = None
     status: Optional[ProductStatus] = None
-    licence_id: Optional[int] = None
+    license_id: Optional[int] = None
     category_id: Optional[int] = None
     slug: Optional[str] = None
     images: Optional[List[str]] = None
@@ -67,10 +66,18 @@ class ProductUpdate(BaseModel):
 # =========================
 class ProductResponse(ProductBase, IDSchema, TimestampSchema):
     slug: str
-    category: Optional[CategoryResponse] = None
-    license: Optional[LicenseResponse] = None
-    images: List[ImageResponse] = Field(default_factory=list)
-    specifications: List[SpecificationResponse] = Field(default_factory=list)
+    images: List[ImageResponse] = []
+    license: Optional["LicenseResponseSummary"] = None # type: ignore
+    category: Optional["CategoryResponseSummary"] = None # type: ignore
+    specifications: List[SpecificationResponse]  = []
+    model_config = {
+        "from_attributes": True
+    }
+
+class ProductResponseSummary(BaseModel):
+    id: int
+    name: str
+    model_config = {"from_attributes": True}
 
 
 # =========================

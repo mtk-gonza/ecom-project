@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, List
 from app.domain.exceptions import ValidationError
+from app.domain.entities.role import Role
 
 
 @dataclass
@@ -15,7 +16,7 @@ class User:
     is_active: bool = True
     is_verified: bool = False
     # 🔹 Relaciones
-    roles: List[str] = field(default_factory=list)
+    roles: List[Role] = field(default_factory=list)
     # 🔹 Auditoría
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

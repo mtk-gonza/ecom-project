@@ -28,7 +28,14 @@ class ImageUpdate(ImageBase):
 # =========================
 # RESPONSE
 # =========================
-class ImageResponse(ImageBase, IDSchema, TimestampSchema):
+class ImageResponse(BaseModel):
+    id: int
+    path: str
+    image_type: str
+    is_primary: bool
+
+    model_config = {"from_attributes": True}
+class ImageResponseCompleto(ImageBase, IDSchema, TimestampSchema):
     pass
     
 # =========================

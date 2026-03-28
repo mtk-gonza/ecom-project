@@ -1,10 +1,15 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional, Dict
+from typing import List, Optional, TYPE_CHECKING
 from app.domain.enums import Currency, ProductStatus
 from app.domain.exceptions import ValidationError
+from app.domain.entities.specification import Specification
+from app.domain.entities.image import Image
 
+if TYPE_CHECKING:
+    from app.domain.entities.license import License
+    from app.domain.entities.category import Category
 
 @dataclass
 class Product:
@@ -26,9 +31,11 @@ class Product:
     # 🔹 Relaciones (IDs)
     license_id: Optional[int] = None
     category_id: Optional[int] = None
+    license: Optional['License'] = None
+    category: Optional['Category'] = None
     # 🔹 Datos flexibles
-    specifications: List[Dict[str, str]] = field(default_factory=list)
-    images: List[str] = field(default_factory=list)
+    specifications: List[Specification] = field(default_factory=list)
+    images: List[Image] = field(default_factory=list)
     # 🔹 Auditoría
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

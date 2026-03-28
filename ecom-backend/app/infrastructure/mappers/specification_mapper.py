@@ -3,8 +3,10 @@ from app.domain.entities.specification import Specification
 from app.infrastructure.db.models.specification_model import SpecificationModel
 
 class SpecificationMapper(BaseMapper):
-    @staticmethod
-    def to_domain(model: SpecificationModel) -> Specification:
+    RELATION_MAPPERS = {}
+
+    @classmethod
+    def to_domain(cls, model: SpecificationModel) -> Specification:
         return BaseMapper.to_domain(model, Specification)
 
     @staticmethod

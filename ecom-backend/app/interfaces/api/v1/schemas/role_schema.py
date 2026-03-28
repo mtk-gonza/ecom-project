@@ -25,7 +25,9 @@ class RoleUpdate(RoleBase):
 # RESPONSE
 # =========================
 class RoleResponse(RoleBase, IDSchema, TimestampSchema):
-    pass
+    model_config = {
+        "from_attributes": True
+    }
 
 # =========================
 # DELETE

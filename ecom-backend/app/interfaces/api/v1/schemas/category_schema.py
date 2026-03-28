@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 
 # =========================
@@ -26,7 +26,15 @@ class CategoryUpdate(BaseModel):
 # RESPONSE
 # =========================
 class CategoryResponse(CategoryBase, IDSchema, TimestampSchema):
-    pass
+    id: int
+    products: List["ProductResponseSummary"] = [] # type: ignore
+    model_config = {"from_attributes": True}
+
+class CategoryResponseSummary(BaseModel):
+    name: str
+    description: Optional[str] = None
+    model_config = {"from_attributes": True}
+
 
 # =========================
 # DELETE

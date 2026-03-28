@@ -2,9 +2,11 @@ from app.infrastructure.mappers.base_mapper import BaseMapper
 from app.domain.entities.role import Role
 from app.infrastructure.db.models.role_model import RoleModel
 
-class LicenceMapper(BaseMapper):
-    @staticmethod
-    def to_domain(model: RoleModel) -> Role:
+class RoleMapper(BaseMapper):
+    RELATION_MAPPERS = {}
+
+    @classmethod
+    def to_domain(cls, model: RoleModel) -> Role:
         return BaseMapper.to_domain(model, Role)
 
     @staticmethod

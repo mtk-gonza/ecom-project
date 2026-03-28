@@ -1,32 +1,29 @@
+from typing import TYPE_CHECKING
 from app.infrastructure.mappers.base_mapper import BaseMapper
 from app.domain.entities.product import Product
 from app.infrastructure.db.models.product_model import ProductModel
+from .image_mapper import ImageMapper
+from .specification_mapper import SpecificationMapper
+
+if TYPE_CHECKING:
+    from .license_mapper import LicenseMapper
+    from .category_mapper import CategoryMapper
 
 class ProductMapper(BaseMapper):
-    @staticmethod
-    def to_domain(model: ProductModel) -> Product:
-        product = BaseMapper.to_domain(model, Product)
-        product.specifications = [
-            {
-                'key': s.key, 
-                'value': s.value
-            } 
-            for s in model.specifications
-        ]
-        product.images = [
-            {
-                'path': i.path, 
-                'image_type': i.image_type, 
-                'is_primary': i.is_primary
-            }
-            for i in model.images
-        ]
-        return product
+    RELATION_MAPPERS = {
+        'images': ImageMapper,                  # ← Sin círculo, import directo OK
+        'specifications': SpecificationMapper,  # ← Sin círculo, import directo OK
+        'license': 'LicenseMapper',             # ← String para lazy import
+        'category': 'CategoryMapper',           # ← String para lazy import
+    }
+
+    @classmethod
+    def to_domain(cls, model: ProductModel) -> Product:
+        return BaseMapper.to_domain(model, Product)
 
     @staticmethod
     def from_domain(domain: Product) -> ProductModel:
-        model = BaseMapper.from_domain(domain, ProductModel)
-        return model
+        return BaseMapper.from_domain(domain, ProductModel)
     
     @staticmethod
     def update_model_from_domain(model: ProductModel, domain: Product):

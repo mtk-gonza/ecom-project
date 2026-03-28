@@ -37,7 +37,9 @@ class UserUpdate(BaseModel):
 # RESPONSE
 # =========================
 class UserResponse(UserBase, IDSchema, TimestampSchema):
-    pass
+    model_config = {
+        "from_attributes": True
+    }
 
 # =========================
 # DELETE

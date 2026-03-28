@@ -11,8 +11,45 @@ from app.infrastructure.mappers.license_mapper import LicenseMapper
 logger = logging.getLogger(__name__)
 
 class LicenseRepositoryImpl(LicenseRepository):
-    def __init__(self, db_session: Session):
-        self.db = db_session
+    def __init__(self, db: Session):
+        self.db = db
+
+    def get_all(self, skip: int = 0, limit: int = 100) -> list[License]:
+        try:
+            stmt = select(LicenseModel).offset(skip).limit(limit)
+            result = self.db.execute(stmt)
+            models = result.scalars().all()
+            return [LicenseMapper.to_domain(model) for model in models]
+
+        except SQLAlchemyError as e:
+            logger.error(f'Error reading licences: {e}')
+            raise
+
+
+    def get_by_id(self, licence_id: int) -> License:
+        try:
+            stmt = select(LicenseModel).where(LicenseModel.id == licence_id)
+            result = self.db.execute(stmt)
+            model = result.scalar_one_or_none()
+            if not model:
+                raise NotFoundError(f"Licence {licence_id} not found")
+            return LicenseMapper.to_domain(model)
+
+        except SQLAlchemyError as e:
+            logger.error(f'Error reading licence: {e}')
+            raise
+
+
+    def get_by_name(self, name: str) -> License | None:
+        try:
+            stmt = select(LicenseModel).where(LicenseModel.name == name)
+            result = self.db.execute(stmt)
+            model = result.scalar_one_or_none()
+            return LicenseMapper.to_domain(model) if model else None
+        except SQLAlchemyError as e:
+            logger.error(f"Database error getting license with name '{name}': {e}")
+            raise
+
 
     def create(self, licence: License) -> License:
         try:
@@ -25,35 +62,6 @@ class LicenseRepositoryImpl(LicenseRepository):
         except SQLAlchemyError as e:
             logger.error(f'Error creating licence: {e}')
             self.db.rollback()
-            raise
-
-
-    def get_by_id(self, licence_id: int) -> License:
-        try:
-            stmt = (select(LicenseModel).options(selectinload(LicenseModel.images)).where(LicenseModel.id == licence_id))
-            result = self.db.execute(stmt)
-            model = result.scalar_one_or_none()
-            if not model:
-                raise NotFoundError(f"Licence {licence_id} not found")
-            return LicenseMapper.to_domain(model)
-
-        except SQLAlchemyError as e:
-            logger.error(f'Error reading licence: {e}')
-            raise
-
-
-    def get_all(self) -> list[License]:
-        try:
-            stmt = select(LicenseModel).options(selectinload(LicenseModel.images))
-            result = self.db.execute(stmt)
-            models = result.scalars().all()
-            return [
-                LicenseMapper.to_domain(model) 
-                for model in models
-            ]
-
-        except SQLAlchemyError as e:
-            logger.error(f'Error reading licences: {e}')
             raise
 
 
