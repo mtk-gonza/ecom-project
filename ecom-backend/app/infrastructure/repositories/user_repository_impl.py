@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.exc import SQLAlchemyError
 from app.domain.ports.user_repository import UserRepository
 from app.domain.entities.user import User
@@ -32,15 +32,19 @@ class UserRepositoryImpl(UserRepository):
 
     def get_by_username(self, username: str) -> User:
         try:
-            stmt = select(UserModel).where(UserModel.username == username)
+            stmt = (
+                select(UserModel)
+                .options(selectinload(UserModel.roles))
+                .where(UserModel.username == username)
+            )
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
                 raise NotFoundError(f"User {username} not found")
             return UserMapper.to_domain(model)
 
-        except SQLAlchemyError as e:
-            logger.error(f"Error reading user by username: {e}")
+        except Exception as e:
+            logger.error(f"Error reading user: {e}")
             raise
 
 

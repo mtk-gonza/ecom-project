@@ -3,9 +3,12 @@ from app.domain.entities.user import User
 from app.infrastructure.db.models.user_model import UserModel
 
 class UserMapper(BaseMapper):
+
     @staticmethod
     def to_domain(model: UserModel) -> User:
-        return BaseMapper.to_domain(model, User)
+        domain = BaseMapper.to_domain(model, User)
+        domain.roles = [role.name for role in model.roles]
+        return domain
 
     @staticmethod
     def from_domain(domain: User) -> UserModel:

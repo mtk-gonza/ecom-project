@@ -6,11 +6,11 @@ Model = TypeVar("Model")
 class BaseMapper:
     @staticmethod
     def to_domain(model: Model, domain_class: Type[Domain]) -> Domain:
-        return domain_class(**{
-            column.name: getattr(model, column.name)
-            for column in model.__table__.columns
-            if hasattr(domain_class, column.name)
-        })
+        data = {}
+        for field in domain_class.__annotations__.keys():
+            if hasattr(model, field):
+                data[field] = getattr(model, field)
+        return domain_class(**data)
 
     @staticmethod
     def from_domain(domain: Domain, model_class: Type[Model]) -> Model:

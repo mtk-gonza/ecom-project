@@ -14,8 +14,8 @@ class User:
     last_name: str
     is_active: bool = True
     is_verified: bool = False
-    # 🔹 Relaciones (solo IDs)
-    role_ids: List[int] = field(default_factory=list)
+    # 🔹 Relaciones
+    roles: List[str] = field(default_factory=list)
     # 🔹 Auditoría
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -41,13 +41,6 @@ class User:
 
         if not isinstance(self.is_verified, bool):
             raise ValidationError("is_verified debe ser booleano")
-
-        if not isinstance(self.role_ids, list):
-            raise ValidationError("role_ids debe ser una lista de enteros")
-
-        for rid in self.role_ids:
-            if not isinstance(rid, int):
-                raise ValidationError("Todos los role_ids deben ser enteros")
 
     # 🔹 Método de conveniencia
     def full_name(self) -> str:

@@ -11,4 +11,8 @@ class RoleModel(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    user_roles = relationship('UserRolesModel', back_populates='role')
+    users = relationship(
+        'UserModel',
+        secondary='user_roles',
+        back_populates='roles'
+    )

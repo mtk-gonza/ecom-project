@@ -6,13 +6,11 @@ class UserRolesModel(Base):
     __tablename__ = 'user_roles'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    role_id = Column(Integer, ForeignKey('roles.id', ondelete='CASCADE'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    role_id = Column(Integer, ForeignKey('roles.id'))
     assigned_at = Column(DateTime, server_default=func.now(), nullable=False)
 
     # Evita duplicar roles por usuario
     __table_args__ = (
         UniqueConstraint('user_id', 'role_id', name='uq_user_role'),
     )
-    user = relationship('UserModel', back_populates='user_roles')
-    role = relationship('RoleModel', back_populates='user_roles')
