@@ -44,7 +44,7 @@ def update_specification(specification_id: int, specification_data: Specificatio
 # =========================
 # DELETE
 # =========================
-@specification_router.delete('/{specification_id}', response_model=SpecificationDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+@specification_router.delete('/{specification_id}', response_model=SpecificationDeleteResponse)
 def delete_specification(specification_id: int, service: SpecificationServiceDep):
     service.delete_specification(specification_id)
     return {

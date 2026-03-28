@@ -3,7 +3,7 @@ from app.domain.ports.user_repository import UserRepository
 from app.domain.entities.user import User
 from app.domain.exceptions import NotFoundError, ConflictError
 from app.interfaces.api.v1.schemas.user_schema import UserCreate, UserUpdate, UserResponse
-from app.utils.password_utils import hash_password
+from app.infrastructure.security.password_handler import hash_password
 
 logger = get_logger(__name__)
 

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.exc import SQLAlchemyError
 from app.domain.ports.license_repository import LicenseRepository
 from app.domain.entities.license import License
-from app.domain.exceptions import NotFoundException
+from app.domain.exceptions import NotFoundError
 from app.infrastructure.db.models.license_model import LicenseModel
 from app.infrastructure.mappers.license_mapper import LicenseMapper
 
@@ -34,7 +34,7 @@ class LicenseRepositoryImpl(LicenseRepository):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"Licence {licence_id} not found")
+                raise NotFoundError(f"Licence {licence_id} not found")
             return LicenseMapper.to_domain(model)
 
         except SQLAlchemyError as e:
@@ -63,7 +63,7 @@ class LicenseRepositoryImpl(LicenseRepository):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"Licence {licence_id} not found")
+                raise NotFoundError(f"Licence {licence_id} not found")
             LicenseMapper.update_model_from_domain(model, licence_data)
             self.db.commit()
             self.db.refresh(model)
@@ -81,7 +81,7 @@ class LicenseRepositoryImpl(LicenseRepository):
             result = self.db.execute(stmt)
             model = result.scalar_one_or_none()
             if not model:
-                raise NotFoundException(f"Licence {licence_id} not found")
+                raise NotFoundError(f"Licence {licence_id} not found")
             self.db.delete(model)
             self.db.commit()
             return True

@@ -1,23 +1,30 @@
-from fastapi import APIRouter, UploadFile, Depends
-from app.core.enums.image_type import ImageType
-from app.core.use_cases.image_use_cases import CreateImageUseCase
-from app.adapters.persistence.repositories.image_repository_impl import ImageRepositoryImpl
-from app.adapters.persistence.repositories.product_repository_impl import ProductRepositoryImpl
-from app.adapters.persistence.repositories.licence_repository_impl import LicenceRepositoryImpl
-from app.adapters.api.dependency import db_dependency, user_dependency
+from fastapi import APIRouter, UploadFile, File, Depends
+from typing import List, Annotated
+from app.domain.enums import EntityType, ImageType
+from app.interfaces.api.v1.dependencies.services import get_image_service
+from app.application.services.image_service import ImageService
 
-router = APIRouter(prefix='/images', tags=['IMAGES'])
+router = APIRouter(prefix='/images', tags=['Images'])
 
-@router.post('/upload')
-async def upload_image(image_data: UploadFile, entity_type: str, entity_id: int, image_type: ImageType, db: db_dependency, user: user_dependency):
-    use_case = CreateImageUseCase(
-        image_repository=ImageRepositoryImpl(db),
-        product_repository=ProductRepositoryImpl(db),
-        licence_repository=LicenceRepositoryImpl(db)
-    )
-    return await use_case.execute(
-        image_data=image_data,
+CategoryServiceDep = Annotated[ImageService, Depends(get_image_service)]
+
+
+@router.post("/upload")
+async def upload_image(
+    service: CategoryServiceDep,
+    file: UploadFile = File(...),
+    entity_type: EntityType = None,
+    entity_id: int = None,
+    image_type: ImageType = ImageType.FRONT,
+):
+    content = await file.read()
+
+    image = await service.create_image(
+        filename=file.filename,
+        image_data=content,
         entity_type=entity_type,
         entity_id=entity_id,
         image_type=image_type
     )
+
+    return image

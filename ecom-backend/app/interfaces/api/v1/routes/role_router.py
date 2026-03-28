@@ -44,7 +44,7 @@ def update_role(role_id: int, role_data: RoleUpdate, service: RoleServiceDep) ->
 # =========================
 # DELETE
 # =========================
-@role_router.delete('/{role_id}', response_model=RoleDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+@role_router.delete('/{role_id}', response_model=RoleDeleteResponse)
 def delete_role(role_id: int, service: RoleServiceDep):
     service.delete_role(role_id)
     return {

@@ -2,7 +2,7 @@ import logging
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from app.domain.ports.specification_repository import ProductSpecRepositoryPort
+from app.domain.ports.specification_repository import SpecificationRepository
 from app.domain.entities.specification import Specification
 from app.domain.exceptions import NotFoundError
 from app.infrastructure.db.models.specification_model import SpecificationModel
@@ -10,7 +10,7 @@ from app.infrastructure.mappers.specification_mapper import SpecificationMapper
 
 logger = logging.getLogger(__name__)
 
-class SpecificationRepositoryImpl(ProductSpecRepositoryPort):
+class SpecificationRepositoryImpl(SpecificationRepository):
     def __init__(self, db_session: Session):
         self.db = db_session
 

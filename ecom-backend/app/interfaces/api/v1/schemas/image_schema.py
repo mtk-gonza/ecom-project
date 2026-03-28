@@ -9,8 +9,8 @@ from app.interfaces.api.v1.schemas.base import IDSchema, TimestampSchema
 class ImageBase(BaseModel):
     path: str
     entity_id: int
-    entity_type: EntityType
-    image_type: ImageType
+    entity_type: EntityType 
+    image_type: ImageType = ImageType.FRONT
     is_primary: bool = True
 
 # =========================

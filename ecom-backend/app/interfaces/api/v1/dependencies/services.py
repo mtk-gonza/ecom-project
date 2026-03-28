@@ -37,8 +37,8 @@ def get_specification_service(repo = Depends(get_specification_repository)) -> S
 def get_user_service(repo = Depends(get_user_repository)) -> UserService:
     return UserService(repo)
 
-def get_auth_service(user_repo = Depends(get_user_repository), role_repo = Depends(get_role_repository)) -> AuthService:
-    return AuthService(user_repo, role_repo)
+def get_auth_service(user_repo = Depends(get_user_repository)) -> AuthService:
+    return AuthService(user_repo)
 
 def get_image_service(
     image_repo = Depends(get_image_repository),

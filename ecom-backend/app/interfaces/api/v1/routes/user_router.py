@@ -44,7 +44,7 @@ def update_user(user_id: int, user_data: UserUpdate, service: UserServiceDep) ->
 # =========================
 # DELETE
 # =========================
-@user_router.delete('/{user_id}', response_model=UserDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+@user_router.delete('/{user_id}', response_model=UserDeleteResponse)
 def delete_user(user_id: int, service: UserServiceDep):
     service.delete_user(user_id)
     return {

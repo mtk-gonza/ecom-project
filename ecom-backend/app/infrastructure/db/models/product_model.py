@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, DECIMAL, Boolean, ForeignKey, DateTime, func, Enum
+from sqlalchemy import Column, Integer, String, DECIMAL, Boolean, ForeignKey, DateTime, func, Enum, and_
 from sqlalchemy.orm import relationship
 from app.infrastructure.db.base import Base
-from app.domain.enums import Currency, ProductStatus
+from app.domain.enums import Currency, ProductStatus, EntityType
+from app.infrastructure.db.models.image_model import ImageModel
 
 class ProductModel(Base):
     __tablename__ = 'products'
@@ -36,16 +37,18 @@ class ProductModel(Base):
     status = Column(Enum(ProductStatus), nullable=False, default=ProductStatus.ACTIVE)
 
     # 🔹 Relaciones
-    licence_id = Column(Integer, ForeignKey('licences.id'), nullable=True)
+    license_id = Column(Integer, ForeignKey('licenses.id'), nullable=True)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=True)
     license = relationship('LicenseModel', back_populates='products')
     category = relationship('CategoryModel', back_populates='products')
     specifications = relationship('SpecificationModel', back_populates='product')
     images = relationship(
-        "ImageModel",
-        primaryjoin="and_(Product.id == Image.entity_id, Image.entity_type == 'product')",
-        foreign_keys="[Image.entity_id]",
-        overlaps="license_images",
+        'ImageModel',
+        primaryjoin=and_(
+            id == ImageModel.entity_id,
+            ImageModel.entity_type == EntityType.PRODUCT.value
+        ),
+        foreign_keys=[ImageModel.entity_id],
         viewonly=True
     )
 

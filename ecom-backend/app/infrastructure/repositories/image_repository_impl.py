@@ -2,7 +2,7 @@ import logging
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from app.domain.ports.image_repository import ImageRepositoryPort
+from app.domain.ports.image_repository import ImageRepository
 from app.domain.entities.image import Image
 from app.domain.exceptions import NotFoundError
 from app.infrastructure.db.models.image_model import ImageModel
@@ -10,7 +10,7 @@ from app.infrastructure.mappers.image_mapper import ImageMapper
 
 logger = logging.getLogger(__name__)
 
-class ImageRepositoryImpl(ImageRepositoryPort):
+class ImageRepositoryImpl(ImageRepository):
     def __init__(self, db_session: Session):
         self.db = db_session
 

@@ -3,6 +3,7 @@ from .category_model import CategoryModel
 from .license_model import LicenseModel
 from .image_model import ImageModel
 from .specification_model import SpecificationModel
+from .user_roles_model import UserRolesModel
 
 __all__ = [
     'CategoryModel',
@@ -10,6 +11,7 @@ __all__ = [
     'LicenseModel',
     'ProductModel',
     'RoleModel',
-    'UserModel'
-    'SpecificationModel'
+    'UserModel',
+    'SpecificationModel',
+    'UserRolesModel'
 ]

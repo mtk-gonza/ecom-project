@@ -44,7 +44,10 @@ def update_category(category_id: int, category: CategoryUpdate, service: Categor
 # =========================
 # DELETE
 # =========================
-@category_router.delete('/{category_id}', response_model=CategoryDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+@category_router.delete('/{category_id}', response_model=CategoryDeleteResponse)
 def delete_category(category_id: int, service: CategoryServiceDep):
     service.delete_category(category_id)
-    return None
+    return {
+        'success': True,
+        'detail': f'Category with ID: {category_id} successfully removed.'
+    }

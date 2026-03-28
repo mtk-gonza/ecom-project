@@ -24,7 +24,7 @@ class Product:
     is_featured: bool = False
     status: ProductStatus = ProductStatus.ACTIVE
     # 🔹 Relaciones (IDs)
-    licence_id: Optional[int] = None
+    license_id: Optional[int] = None
     category_id: Optional[int] = None
     # 🔹 Datos flexibles
     specifications: List[Dict[str, str]] = field(default_factory=list)

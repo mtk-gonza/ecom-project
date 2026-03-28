@@ -44,7 +44,7 @@ def update_license(license_id: int, license_data: LicenseUpdate, service: Licens
 # =========================
 # DELETE
 # =========================
-@license_router.delete('/{product_id}', response_model=LicenseDeleteResponse, status_code=status.HTTP_204_NO_CONTENT)
+@license_router.delete('/{product_id}', response_model=LicenseDeleteResponse)
 def deletelicense(license_id: int, service: LicenseServiceDep):
     service.delete_license(license_id)
     return {
